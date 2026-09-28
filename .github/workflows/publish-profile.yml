@@ -3,7 +3,7 @@ name: Publish profile page
 on:
   push:
     branches: [master]
-    paths: [README.md]
+    paths: [README.md, site-template.html, .github/workflows/publish-profile.yml]
 
 permissions:
   contents: write
@@ -18,8 +18,10 @@ jobs:
           script: |
             const fs = require("fs");
             const source = fs.readFileSync("README.md", "utf8");
-            const { data: body } = await github.rest.markdown.render({ text: source, mode: "gfm", context: `${context.repo.owner}/${context.repo.repo}` });
-            fs.writeFileSync("index.html", `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Nick Lalande · Anid4u2c</title><style>body{margin:0;background:#08111d;color:#eff6ff;font:18px/1.65 system-ui,sans-serif}main{max-width:760px;margin:auto;padding:clamp(3rem,10vw,7rem) 1.5rem}article{border-top:1px solid #29415e}h1{font-size:clamp(2.8rem,9vw,5.5rem);line-height:1;letter-spacing:-.06em;margin:2rem 0}h2{margin-top:3rem;color:#62d6ff;font-size:1rem;text-transform:uppercase;letter-spacing:.08em}p,li{color:#b6c5d8}blockquote{margin:2rem 0;padding-left:1rem;border-left:3px solid #62d6ff;color:#eff6ff}a{color:#62d6ff}</style></head><body><main><article>${body}</article></main></body></html>`);
+            const publicSource = source.split("\n## How this site is published")[0];
+            const { data: body } = await github.rest.markdown.render({ text: publicSource, mode: "gfm", context: `${context.repo.owner}/${context.repo.repo}` });
+            const template = fs.readFileSync("site-template.html", "utf8");
+            fs.writeFileSync("index.html", template.replace("{{body}}", body));
       - name: Commit generated page
         run: |
           git diff --quiet && exit 0
