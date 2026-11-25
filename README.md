@@ -26,3 +26,7 @@ Built with a focus on clear, maintainable software.
 This README is the source of truth for the public site. Updating README.md triggers the GitHub Actions workflow, which regenerates index.html and publishes the new content through GitHub Pages.
 
 This project intentionally keeps the public page limited to professional capabilities rather than personal contact details or client information.
+
+## Copyright
+
+See [COPYRIGHT.md](COPYRIGHT.md) for the notice covering original code and documentation.
